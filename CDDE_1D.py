@@ -2,38 +2,46 @@ import pandas as pd
 import numpy as np
 import pingouin as pg
 import pyDOE2 as doe
+import matplotlib.pyplot as plt
 
-n = 4
+n = 3
 # Read from excel sheet.
 BladeStats = pd.read_excel('C:/Users/sweea/.spyder-py3/1D_Data.xlsx')
 # print(BladeStats)
-# print(BladeStats.loc[(BladeStats['Blade_Scale'] == 3)])
+print(BladeStats.loc[(BladeStats['Blade_Scale'] == 1), ["Blade_Scale", "Force"]])
 print("---- Factorial Design----")
 print("Blade_Scale Relationship:")
-Sum_BladeScaleLow = np.sum(BladeStats.loc[(BladeStats['Blade_Scale'] == 1), "Force"].to_numpy())
+Sum_BladeScaleLow = np.sum(BladeStats.loc[(BladeStats['Blade_Scale'] == 1), "Force2"].to_numpy())
 BS_R_minus = Sum_BladeScaleLow/(4*n)
 print("R_-: ", BS_R_minus)
-Sum_BladeScaleHigh = np.sum(BladeStats.loc[(BladeStats['Blade_Scale'] == 3), "Force"].to_numpy())
+Sum_BladeScaleHigh = np.sum(BladeStats.loc[(BladeStats['Blade_Scale'] == 3), "Force2"].to_numpy())
 BS_R_plus = Sum_BladeScaleHigh/(4*n)
 print("R_+: ", BS_R_plus)
 BS_ME = BS_R_plus - BS_R_minus
 print("Main Effect, M.E: ", BS_ME)
+BS_x = [-1, 1]
+BS_y = [BS_R_minus, BS_R_plus]
+plt.figure()
+plt.plot(BS_x, BS_y)
+plt.title("Blade Scale")
+
+
 print("---")
 print("No_Of_Blade Relationship:")
-Sum_NoOfBladeLow = np.sum(BladeStats.loc[(BladeStats['No_Of_Blade'] == 2), "Force"].to_numpy())
+Sum_NoOfBladeLow = np.sum(BladeStats.loc[(BladeStats['No_Of_Blade'] == 2), "Force2"].to_numpy())
 NOB_R_minus = Sum_NoOfBladeLow/(4*n)
 print("R_-: ", NOB_R_minus)
-Sum_NoOfBladeHigh = np.sum(BladeStats.loc[(BladeStats['No_Of_Blade'] == 4), "Force"].to_numpy())
+Sum_NoOfBladeHigh = np.sum(BladeStats.loc[(BladeStats['No_Of_Blade'] == 4), "Force2"].to_numpy())
 NOB_R_plus = Sum_NoOfBladeHigh/(4*n)
 print("R_+: ", NOB_R_plus)
 NOB_ME = NOB_R_plus - NOB_R_minus
 print("Main Effect, M.E: ", NOB_ME)
 print("---")
 print("Blade_Diameter Relationship:")
-Sum_BladeDiameterLow = np.sum(BladeStats.loc[(BladeStats['Blade_Diameter'] == 75), "Force"].to_numpy())
+Sum_BladeDiameterLow = np.sum(BladeStats.loc[(BladeStats['Blade_Diameter'] == 75), "Force2"].to_numpy())
 BD_R_minus = Sum_BladeDiameterLow/(4*n)
 print("R_-: ", BD_R_minus)
-Sum_BladeDiameterHigh = np.sum(BladeStats.loc[(BladeStats['Blade_Diameter'] == 100), "Force"].to_numpy())
+Sum_BladeDiameterHigh = np.sum(BladeStats.loc[(BladeStats['Blade_Diameter'] == 100), "Force2"].to_numpy())
 BD_R_plus = Sum_BladeDiameterHigh/(4*n)
 print("R_+: ", BD_R_plus)
 BD_ME = BD_R_plus - BD_R_minus
@@ -46,9 +54,10 @@ print("Main Effect, M.E: ", BD_ME)
 
 print()
 print("---- To Double Check ----")
-# Perform multi-factor ANOVA with factor = 2 (ss_type = 2) and round BladeDissectues to 3 decimal point.
+# Perform multi-factor ANOVA with factor = 3 (ss_type = 3) and round BladeDissectues to 3 decimal point.
 # Values returned as panda.dataframe
-BladeDissect = BladeStats.anova(dv='Force', between=['Blade_Scale','No_Of_Blade','Blade_Diameter'], ss_type=1).round(3)
+BladeDissect = BladeStats.anova(dv='Force2', between=['Blade_Scale','No_Of_Blade','Blade_Diameter'], ss_type=3).round(3)
+print(BladeDissect)
 print("----Blade_Scale---- ")
 print("Degree Of Freedom: ", BladeDissect.iloc[0][2])
 print("SS(Blade_Scale)_treatment: ", BladeDissect.iloc[0][1])
